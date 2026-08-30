@@ -1,4 +1,4 @@
-package com.scala.chapter01
+package chapter01
 
 class NumberTools(maxSize: Int, maxValue: Int) {
 

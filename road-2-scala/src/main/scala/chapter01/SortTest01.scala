@@ -1,4 +1,4 @@
-package com.scala.chapter01
+package chapter01
 
 import org.junit.jupiter.api.Test
 

@@ -1,4 +1,4 @@
-package com.fabinliu.chapter01;
+package chapter01;
 
 import java.util.Arrays;
 
