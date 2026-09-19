@@ -69,3 +69,50 @@ func TestSort04(t *testing.T) {
 	}
 	fmt.Println(arr)
 }
+
+func TestSort05(t *testing.T) {
+	tools := NewTools(10, 100)
+	items := tools.GetItems()
+	fmt.Println("排序前:", tools.toString())
+	process(items, 0, len(items)-1)
+
+	fmt.Println("排序后:", items)
+
+}
+
+func process(items []int, min int, max int) {
+	if min == max {
+		return
+	}
+	mid := min + (max-min)>>1
+	process(items, min, mid)
+	process(items, mid+1, max)
+	merge(items, min, mid, max)
+}
+func merge(items []int, min int, mid int, max int) {
+	helper := make([]int, max-min+1)
+	i := 0
+	p1 := min
+	p2 := mid + 1
+	for p1 <= mid && p2 <= max {
+		if items[p1] > items[p2] {
+			helper[i] = items[p2]
+			p2++
+		} else {
+			helper[i] = items[p1]
+			p1++
+		}
+		i++
+	}
+	for ; p1 <= mid; p1++ {
+		helper[i] = items[p1]
+		i++
+	}
+	for ; p2 <= max; p2++ {
+		helper[i] = items[p2]
+		i++
+	}
+	for k := 0; k < len(helper); k++ {
+		items[min+k] = helper[k]
+	}
+}

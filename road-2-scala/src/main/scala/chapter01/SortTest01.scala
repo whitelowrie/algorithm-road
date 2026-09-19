@@ -2,9 +2,13 @@ package chapter01
 
 import org.junit.jupiter.api.Test
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future, blocking}
+
 class SortTest01 {
 
-  val tools = NumberTools(10, 20)
+  private val tools = NumberTools(10000000, 1000000)
   /**
    * 选择排序
    */
@@ -79,18 +83,20 @@ class SortTest01 {
    */
   @Test
   def test05(): Unit = {
-    val items = tools.getItems
-    tools.pritln()
+    val items: Array[Int] = tools.getItems
+    val start: Long = System.currentTimeMillis()
     process(items, 0, items.length - 1)
-    println(items.mkString("Array(", ", ", ")"))
+    val end: Long = System.currentTimeMillis()
+    println(s"耗时${end - start}毫秒")
   }
 
   private def process(arr: Array[Int], min: Int, max: Int): Unit = {
     if (min == max) then ()      // 什么都不做，直接返回 Unit
     else
-      val mid = min + ((max - min) >> 1)
-      process(arr, min, mid)
-      process(arr, mid + 1, max)
+      val mid: Int = min + ((max - min) >> 1)
+      val f1 = Future{process(arr, min, mid)}
+      val f2 = Future{process(arr, mid + 1, max)}
+      blocking{Await.result(Future.sequence(Seq(f1, f2)), Duration.Inf)}
       merge(arr, min, mid, max)
   }
 
@@ -108,13 +114,12 @@ class SortTest01 {
         p2 += 1
       i += 1
     }
-    val inc = (k: Int, max: Int) => {
-      var s = k
-      while (s <= max) {
+    val inc: (Int, Int) => Unit = (k: Int, max: Int) => {
+      var s: Int = k
+      while (s <= max) do
         temp(i) = arr(s)
         i += 1
         s += 1
-      }
     }
     inc(p1, mid)
     inc(p2, max)

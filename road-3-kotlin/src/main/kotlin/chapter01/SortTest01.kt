@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 
 class SortTest01 {
 
+    val tools = NumberToos(100000000, 100)
     /**
      * 选择排序
      */
@@ -72,8 +73,37 @@ class SortTest01 {
         println(items.joinToString())
     }
 
+    @Test
+    fun test05(){
+        val items = this.tools.getItems()
+        println(items.joinToString())
+        process(items, 0, items.size - 1)
+        println(items.joinToString())
+    }
 
-
-
-
+    fun process(items: Array<Int>, min: Int, max: Int) {
+        if(min == max) {
+            return
+        }
+        val mid = min + ((max - min) shr 1)
+        process(items, min, mid)
+        process(items, mid + 1, max)
+        merge(items, min, mid, max)
+    }
+    fun merge(items: Array<Int>, min: Int, mid: Int, max: Int) {
+        val helper = Array(max - min + 1){ 0 }
+        var i0 = 0
+        var p1 = min
+        var p2 = mid + 1
+        while(p1 <= mid && p2 <= max) {
+            helper[i0++] = if(items[p1] > items[p2]) items[p2++] else items[p1++]
+        }
+        while(p1 <= mid) {
+            helper[i0++] = items[p1++]
+        }
+        while(p2 <= max) {
+            helper[i0++] = items[p2++]
+        }
+        System.arraycopy(helper, 0, items, min, helper.size)
+    }
 }

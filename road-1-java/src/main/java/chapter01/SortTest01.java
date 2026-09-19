@@ -2,12 +2,13 @@ package chapter01;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SortTest01 {
 
 
-    NumberTools tools = new NumberTools(4, 20);
+    NumberTools tools = new NumberTools(3, 100);
 
     /**
      * 选择排序
@@ -113,9 +114,8 @@ public class SortTest01 {
      */
     @Test
     public void test05() {
-
-        tools.print();
         var arr = tools.getItems();
+        var start = System.currentTimeMillis();
         for(int i = 1; i < arr.length; i++){
             for(int j = i; j > 0; j--){
                 if(arr[j] < arr[j-1]){
@@ -125,8 +125,8 @@ public class SortTest01 {
                 }
             }
         }
-        var result = tools.equal(arr);
-        System.out.println(result);
+        var end = System.currentTimeMillis();
+        System.out.println("耗时: " + (end - start) + " ms");
     }
 
 
@@ -134,6 +134,7 @@ public class SortTest01 {
     public void test06(){
         var items = tools.getItems();
         tools.print();
+
         var max = getMax(items, 0, items.length - 1);
         System.out.println(max);
     }
@@ -149,9 +150,10 @@ public class SortTest01 {
     @Test
     public void test07(){
         var items = tools.getItems();
-        tools.print();
+        var start = System.currentTimeMillis();
         process(items, 0, items.length - 1);
-        System.out.println(Arrays.toString(items));
+        var end = System.currentTimeMillis();
+        System.out.println("耗时: " + (end - start) + " ms");
     }
 
     public void process(int[] arr, int i, int j){
@@ -181,5 +183,64 @@ public class SortTest01 {
         }
         System.arraycopy(help, 0, arr, i, help.length);
     }
+
+    @Test
+    public void test08(){
+        var items = new int[]{-1, 7, 5, 8};
+        System.out.println(Arrays.toString(items));
+        var mixSum = new ArrayList<Integer>();
+        var start = System.currentTimeMillis();
+        process(items, 0, items.length - 1, mixSum);
+        System.out.println("数列的小和: " + mixSum);
+        var end = System.currentTimeMillis();
+        System.out.println(Arrays.toString(items));
+        System.out.println("耗时: " + (end - start) + " ms");
+    }
+    // -3, 7, 5 ;
+    // -47,
+    public void process(int[] items, int l, int r, ArrayList<Integer> init){
+        if(l == r) {
+            return;
+        }
+        var m = l + ((r - l) >> 1);
+        process(items, l, m, init);
+        process(items, m + 1, r, init);
+        merge(items, l, m, r, init);
+    }
+
+    public void merge(int[] items, int l, int m, int r, ArrayList<Integer> init) {
+        var help = new int[r - l + 1];
+        var d = 0;
+        var p1 = l;
+        var p2 = m + 1;
+        while(p1 <= m & p2 <= r){
+            if(items[p1] < items[p2]){
+                init.add(items[p1]);
+                help[d++] = items[p1++];
+            } else if(items[p1] >= items[p2]){
+                help[d++] = items[p2++];
+            }
+        }
+        while (p1 <= m) {
+            help[d++] = items[p1++];
+        }
+
+        if(p2 <= r){
+            var ls = 0;
+            var sl = new ArrayList<Integer>();
+            for(int i = 0; i <= r - p2; i++){
+                sl.add(items[i]);
+            }
+            while (p2 <= r) {
+                init.addAll(sl);
+                help[d++] = items[p2++];
+            }
+        }
+
+        System.arraycopy(help, 0, items, l, help.length);
+    }
+
+
+
 
 }
