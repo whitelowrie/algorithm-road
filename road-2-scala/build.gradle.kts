@@ -15,6 +15,7 @@ dependencies {
     implementation(platform("org.junit:junit-bom:5.11.3"))
     implementation("org.junit.jupiter:junit-jupiter")
     implementation("org.junit.platform:junit-platform-launcher")
+    implementation("com.softwaremill.ox:core_3:1.0.7")
 }
 
 java {

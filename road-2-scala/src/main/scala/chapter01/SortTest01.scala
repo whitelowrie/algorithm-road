@@ -2,13 +2,18 @@ package chapter01
 
 import org.junit.jupiter.api.Test
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future, blocking}
 
 class SortTest01 {
 
-  private val tools = NumberTools(10000000, 1000000)
+  import java.util.concurrent.Executors
+  import scala.concurrent.ExecutionContext
+
+  given ExecutionContext =
+    ExecutionContext.fromExecutor(Executors.newVirtualThreadPerTaskExecutor())
+
+  private val tools = NumberTools(10, 1000000)
   /**
    * 选择排序
    */
@@ -125,6 +130,55 @@ class SortTest01 {
     inc(p2, max)
     // 把 temp 拷贝回 arr
     for k <- temp.indices do arr(min + k) = temp(k)
+  }
+
+  @Test
+  def test11(): Unit = {
+    val items: Array[Int] = tools.getItems
+    tools.pritln()
+    this.process01(items, 0, items.length - 1)
+    println(items.mkString(","))
+  }
+
+  import ox.*
+  private def process01(items: Array[Int], min: Int, max: Int): Unit = {
+    if (min == max) then ()
+    else {
+      val mid: Int = min + ((max - min) >> 1)
+      par (
+        process01(items, min, mid),
+        process01(items, mid + 1, max)
+      )
+      merge(items, min, mid, max)
+    }
+  }
+  private def merge01(items: Array[Int], min: Int, mid: Int, max: Int): Unit = {
+    val temp = new Array[Int](max - min + 1)
+    var i  = 0
+    var p1 = min
+    var p2 = mid + 1
+    while(i <= mid && p2 <= max) {
+      temp(i) = if items(p1) > items(p2) then
+        val v1 = items(p2)
+        p1 += 1
+        v1
+      else
+        val v2 = items(p1)
+        p2 += 1
+        v2
+      i += 1
+    }
+    while(p1 <= mid) {
+      temp(i) = items(p1)
+      i += 1
+      p1 += 1
+    }
+    while(p2 <= max) {
+      temp(i) = items(p2)
+      i += 1
+      p2 += 1
+    }
+    for i <- temp.indices do items(min + i) = temp(i)
   }
 
 }

@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class SortTest01 {
 
 
-    NumberTools tools = new NumberTools(3, 100);
+    NumberTools tools = new NumberTools(10, 100);
 
     /**
      * 选择排序
@@ -240,7 +240,39 @@ public class SortTest01 {
         System.arraycopy(help, 0, items, l, help.length);
     }
 
+    @Test
+    public void test10() {
+        var items = new int[]{21, 7, -26, 7, -35, 11, 12, -20, 29, 40};
+        tools.print();
+        this.merge(items, 0, items.length - 1);
+        System.out.println(Arrays.toString(items));;
+    }
 
+    public void merge(int[] items, int i, int j) {
+        if(i >= j) {
+            return;
+        }
+        var mid = i + ((j - i) >> 1);
+        merge(items, i, mid);
+        merge(items, mid + 1, j);
+        sort(items, i, mid, j);
+    }
 
+    public void sort(int[] items, int i, int m, int j){
+        int[] temp = new int[j-i+1];
+        var s = i;
+        var d = m+1;
+        var t = 0;
+        while(s <= m && d <= j) {
+            temp[t++] = items[s] > items[d] ? items[d++] : items[s++];
+        }
+        while(s <= m) {
+            temp[t++] = items[s++];
+        }
+        while(d <= j) {
+            temp[t++] = items[d++];
+        }
+        System.arraycopy(temp, 0, items, i, temp.length);
 
+    }
 }
