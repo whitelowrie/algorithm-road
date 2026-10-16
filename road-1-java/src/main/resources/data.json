@@ -1,0 +1,1 @@
+"user":"biddingrisk_data", "password": "biddingrisk#2026", "address": "jdbc:mysql://9.134.37.171:3306","database": "biddingrisk", "jdbcUrl": "jdbc:mysql://9.134.37.171:3306/biddingrisk", "driverClassName":"com.mysql.cj.jdbc.Driver", "validationQuery": "select 1", "other":{"serverTimezone": "Asia/Shanghai"}, "props":{"serverTimezone": "Asia/Shanghai"}}
